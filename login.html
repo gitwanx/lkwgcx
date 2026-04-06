@@ -435,8 +435,8 @@
 
             // 生成验证码
             function generateCaptcha() {
-                var num1 = Math.floor(Math.random() * 100) + 1;
-                var num2 = Math.floor(Math.random() * 100) + 1;
+                var num1 = Math.floor(Math.random() * 10) + 1; // 1-10之间的随机数
+                var num2 = Math.floor(Math.random() * 10) + 1; // 1-10之间的随机数
                 var op = CONFIG.OPERATORS[Math.floor(Math.random() * CONFIG.OPERATORS.length)];
                 var answer, text;
 
@@ -452,8 +452,8 @@
                         text = max + " - " + min + " = ?";
                         break;
                     case "*":
-                        var n1 = Math.floor(Math.random() * 20) + 1;
-                        var n2 = Math.floor(Math.random() * 10) + 1;
+                        var n1 = Math.floor(Math.random() * 10) + 1; // 1-10之间的随机数
+                        var n2 = Math.floor(Math.random() * 10) + 1; // 1-10之间的随机数
                         answer = n1 * n2;
                         text = n1 + " × " + n2 + " = ?";
                         break;
@@ -597,6 +597,25 @@
                 captchaCode.innerText = newCaptcha.text;
                 currentCaptchaAnswer = newCaptcha.answer;
             };
+
+            // 按回车自动提交
+            usernameInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    passwordInput.focus();
+                }
+            });
+
+            passwordInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    captchaInput.focus();
+                }
+            });
+
+            captchaInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    loginBtn.click();
+                }
+            });
 
             // 登录逻辑
             loginBtn.onclick = async function() {

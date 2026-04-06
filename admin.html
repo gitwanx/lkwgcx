@@ -1617,7 +1617,10 @@
             }
 
             // 验证登录信息
-            function validateLogin() {
+            async function validateLogin() {
+                // 先加载管理员数据
+                await loadAdminData();
+                
                 var adminList = getAdminList();
                 var admin = adminList.find(item => item.username === username || item.employeeId === username);
                 if (!admin) {
@@ -1707,12 +1710,23 @@
             }
 
             // 验证登录信息
-            if (!validateLogin()) {
-                return;
-            }
+            (async function() {
+                if (!(await validateLogin())) {
+                    return;
+                }
 
-            // 初始化管理员数据
-            initAdminData();
+                // 初始化管理员数据
+                initAdminData();
+                
+                // 初始化应用
+                init().then(() => {
+                    // 自动为日志打补丁
+                    var logsPatched = patchLogs();
+                    if (logsPatched) {
+                        showMessageModal("日志补丁已应用，成功为历史日志添加了姓名和工号信息", "success");
+                    }
+                });
+            })();
 
             // 显示提示弹窗函数
             function showMessageModal(message, type = "info") {
@@ -4036,15 +4050,8 @@
                 });
             }
 
-            // 初始化应用
-            // 调用初始化函数
-            init().then(() => {
-                // 自动为日志打补丁
-                var logsPatched = patchLogs();
-                if (logsPatched) {
-                    showMessageModal("日志补丁已应用，成功为历史日志添加了姓名和工号信息", "success");
-                }
-            });
+            // 初始化应用 - 已在验证登录后调用
+            // 自动为日志打补丁 - 已在验证登录后调用
         };
     </script>
 </body>
