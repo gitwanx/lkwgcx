@@ -1,0 +1,14 @@
+{
+  "adminList": [
+    {
+      "username": "17207075015",
+      "employeeId": "2026001",
+      "password": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "role": "super",
+      "firstLogin": false,
+      "createTime": "2026-04-07 12:00:00",
+      "errorCount": 0,
+      "lockTime": 0
+    }
+  ]
+}
