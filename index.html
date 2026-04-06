@@ -803,16 +803,28 @@
                 var matchedPetDetails = matchedPets.map((pet, index) => {
                     return (index + 1) + ". " + pet.name + " (尺寸: " + pet.sizeStr + "m, 重量: " + pet.weightStr + "kg)";
                 }).join("\n");
-                logList.unshift({
+                var newLog = {
                     time: new Date().toLocaleString("zh-CN"),
                     size: size,
                     weight: weight,
                     matchCount: matchCount,
                     platform: navigator.platform || "未知",
                     matchedPets: matchedPetDetails
-                });
+                };
+                logList.unshift(newLog);
                 if (logList.length > 1000) logList.splice(1000);
                 localStorage.setItem("queryLog", JSON.stringify(logList));
+                
+                // 保存到本地文件
+                fetch('query-log.json')
+                    .then(response => response.json())
+                    .catch(() => [])
+                    .then(data => {
+                        data.unshift(newLog);
+                        if (data.length > 1000) data.splice(1000);
+                        // 这里可以添加代码将数据写回JSON文件，但由于浏览器安全限制，这需要后端支持
+                        // 作为替代，我们可以提供下载功能
+                    });
             }
 
             // 核心查询功能
@@ -1050,7 +1062,7 @@
 
                 // 保存反馈到本地
                 var feedbackList = JSON.parse(localStorage.getItem("feedbackList") || "[]");
-                feedbackList.unshift({
+                var newFeedback = {
                     time: new Date().toLocaleString("zh-CN"),
                     name: name,
                     size: size,
@@ -1059,8 +1071,19 @@
                     desc: desc,
                     status: "待处理",
                     source: "前台查询页面"
-                });
+                };
+                feedbackList.unshift(newFeedback);
                 localStorage.setItem("feedbackList", JSON.stringify(feedbackList));
+                
+                // 保存到本地文件
+                fetch('feedback-list.json')
+                    .then(response => response.json())
+                    .catch(() => [])
+                    .then(data => {
+                        data.unshift(newFeedback);
+                        // 这里可以添加代码将数据写回JSON文件，但由于浏览器安全限制，这需要后端支持
+                        // 作为替代，我们可以提供下载功能
+                    });
 
                 // 显示成功消息
                 showMessageModal("反馈提交成功！我们会尽快处理您的反馈", "success");

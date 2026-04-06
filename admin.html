@@ -1069,6 +1069,7 @@
                             <div class="card-title">操作日志</div>
                             <div class="btn-group">
                                 <button class="btn btn-secondary" id="exportOperationLogBtn">导出日志</button>
+                                <button class="btn btn-secondary" id="exportAdminBtn">导出管理员数据</button>
                                 <button class="btn btn-secondary" id="refreshOperationLog">刷新列表</button>
                             </div>
                         </div>
@@ -1756,14 +1757,43 @@
                 }
             }
 
+            // 管理员数据
+            var adminData = {
+                adminList: []
+            };
+            
+            // 从JSON文件加载管理员数据
+            async function loadAdminData() {
+                try {
+                    const response = await fetch('admin-data.json');
+                    if (!response.ok) {
+                        throw new Error('Failed to load admin data');
+                    }
+                    const data = await response.json();
+                    adminData = data;
+                    // 保存到本地存储作为备份
+                    localStorage.setItem('adminList', JSON.stringify(data.adminList));
+                } catch (error) {
+                    console.error('Error loading admin data:', error);
+                    // 从本地存储加载备份
+                    const backupData = localStorage.getItem('adminList');
+                    if (backupData) {
+                        adminData.adminList = JSON.parse(backupData);
+                    }
+                }
+            }
+
             // 获取管理员列表
             function getAdminList() {
-                return JSON.parse(localStorage.getItem("adminList") || "[]");
+                return adminData.adminList;
             }
 
             // 保存管理员列表
             function saveAdminList(list) {
-                localStorage.setItem("adminList", JSON.stringify(list));
+                adminData.adminList = list;
+                // 保存到本地存储作为备份
+                localStorage.setItem('adminList', JSON.stringify(list));
+                // 这里可以添加代码将数据写回JSON文件，但由于浏览器安全限制，这需要后端支持
             }
 
             // 获取精灵数据
@@ -2152,19 +2182,33 @@
             // 记录操作日志
             function recordOperationLog(type, content) {
                 var operationLog = JSON.parse(localStorage.getItem("operationLog") || "[]");
-                operationLog.unshift({
+                var newLog = {
                     time: new Date().toLocaleString("zh-CN"),
                     username: currentUser.username,
                     name: currentUser.name || "",
                     employeeId: currentUser.employeeId || "",
                     type: type,
                     content: content
-                });
+                };
+                operationLog.unshift(newLog);
                 // 只保留最近1000条日志
                 if (operationLog.length > 1000) {
                     operationLog = operationLog.slice(0, 1000);
                 }
                 localStorage.setItem("operationLog", JSON.stringify(operationLog));
+                
+                // 保存到本地文件
+                fetch('operation-log.json')
+                    .then(response => response.json())
+                    .catch(() => [])
+                    .then(data => {
+                        data.unshift(newLog);
+                        if (data.length > 1000) {
+                            data = data.slice(0, 1000);
+                        }
+                        // 这里可以添加代码将数据写回JSON文件，但由于浏览器安全限制，这需要后端支持
+                        // 作为替代，我们可以提供下载功能
+                    });
             }
 
             // 渲染系统设置
@@ -2299,7 +2343,10 @@
             }
 
             // 初始化
-            function init() {
+            async function init() {
+                // 加载管理员数据
+                await loadAdminData();
+                
                 // 初始化数据
                 initAdminData();
                 initPetData();
@@ -3114,6 +3161,26 @@
                     var fileName = "洛克王国操作日志_" + new Date().toLocaleDateString() + ".xlsx";
                     XLSX.writeFile(workbook, fileName);
                     showSuccessModal("导出成功！");
+                });
+
+                // 导出管理员数据
+                document.getElementById("exportAdminBtn").addEventListener("click", function() {
+                    var adminList = getAdminList();
+                    if (adminList.length === 0) {
+                        alert("没有管理员数据可导出");
+                        return;
+                    }
+                    
+                    var adminData = { adminList: adminList };
+                    var dataStr = JSON.stringify(adminData, null, 2);
+                    var dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    var url = URL.createObjectURL(dataBlob);
+                    var link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'admin-data.json';
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    showSuccessModal("管理员数据导出成功！");
                 });
 
                 // 绑定个人空间相关事件
@@ -3970,13 +4037,14 @@
             }
 
             // 初始化应用
-            init();
-            
-            // 自动为日志打补丁
-            var logsPatched = patchLogs();
-            if (logsPatched) {
-                showMessageModal("日志补丁已应用，成功为历史日志添加了姓名和工号信息", "success");
-            }
+            // 调用初始化函数
+            init().then(() => {
+                // 自动为日志打补丁
+                var logsPatched = patchLogs();
+                if (logsPatched) {
+                    showMessageModal("日志补丁已应用，成功为历史日志添加了姓名和工号信息", "success");
+                }
+            });
         };
     </script>
 </body>

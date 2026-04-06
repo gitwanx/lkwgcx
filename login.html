@@ -731,7 +731,7 @@
                     var ip = await getIPAddress();
                     var deviceModel = getDeviceModel();
                     var loginLog = JSON.parse(localStorage.getItem("loginLog") || "[]");
-                    loginLog.unshift({
+                    var newLog = {
                         time: new Date().toLocaleString("zh-CN"),
                         username: username,
                         name: admin ? admin.name || "" : "",
@@ -742,12 +742,26 @@
                         ip: ip,
                         deviceModel: deviceModel,
                         userAgent: navigator.userAgent
-                    });
+                    };
+                    loginLog.unshift(newLog);
                     // 只保留最近1000条日志
                     if (loginLog.length > 1000) {
                         loginLog = loginLog.slice(0, 1000);
                     }
                     localStorage.setItem("loginLog", JSON.stringify(loginLog));
+                    
+                    // 保存到本地文件
+                    fetch('login-log.json')
+                        .then(response => response.json())
+                        .catch(() => [])
+                        .then(data => {
+                            data.unshift(newLog);
+                            if (data.length > 1000) {
+                                data = data.slice(0, 1000);
+                            }
+                            // 这里可以添加代码将数据写回JSON文件，但由于浏览器安全限制，这需要后端支持
+                            // 作为替代，我们可以提供下载功能
+                        });
                 }
                 
                 // 如果是旧格式，转换为新的SHA-256格式
