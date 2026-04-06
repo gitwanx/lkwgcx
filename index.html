@@ -38,34 +38,6 @@
             margin: 0 auto;
         }
         
-        /* 移动端适配优化 */
-        @media (max-width: 480px) {
-            body {
-                padding: 30px 12px;
-            }
-            .card {
-                padding: 20px;
-            }
-            .form-group input {
-                padding: 12px 16px;
-                font-size: 1rem;
-            }
-            .btn {
-                padding: 12px 0;
-                font-size: 1rem;
-            }
-            .pet-image {
-                width: 60px;
-                height: 60px;
-            }
-            .pet-name {
-                font-size: 1.1rem;
-            }
-            .pet-stat {
-                font-size: 0.85rem;
-                padding: 6px 12px;
-            }
-        }
         body::before {
             content: "";
             position: fixed;
@@ -88,19 +60,19 @@
         }
         .admin-entry {
             position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
+            top: 15px;
+            right: 15px;
+            padding: 8px 16px;
             background: linear-gradient(135deg, var(--main-blue) 0%, var(--main-blue-dark) 100%);
             color: white;
             border: none;
-            border-radius: 25px;
+            border-radius: 20px;
             font-weight: 600;
             cursor: pointer;
             z-index: 99;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-decoration: none;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
         }
         .admin-entry:hover {
@@ -110,24 +82,129 @@
         }
         .settings-btn {
             position: fixed;
-            top: 20px;
-            left: 20px;
-            padding: 10px 15px;
+            top: 15px;
+            left: 15px;
+            padding: 8px 12px;
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             border: none;
-            border-radius: 25px;
+            border-radius: 20px;
             font-weight: 600;
             cursor: pointer;
             z-index: 99;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
         .settings-btn:hover {
             background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+        /* 移动端适配优化 */
+        @media (max-width: 600px) {
+            body {
+                padding: 30px 12px;
+            }
+            .header h1 {
+                font-size: 2rem;
+            }
+            .card {
+                padding: 20px;
+            }
+            .form-group input {
+                padding: 12px 16px;
+                font-size: 1rem;
+            }
+            .btn {
+                padding: 12px 0;
+                font-size: 1rem;
+            }
+            .btn-row {
+                flex-direction: column;
+            }
+            .result-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .pet-image {
+                width: 60px;
+                height: 60px;
+            }
+            .pet-name {
+                font-size: 1.1rem;
+            }
+            .pet-stat {
+                font-size: 0.85rem;
+                padding: 6px 12px;
+            }
+            .modal {
+                padding: 10px;
+            }
+            .modal-box {
+                padding: 20px;
+                max-width: 100%;
+            }
+            .modal-title {
+                font-size: 1.2rem;
+            }
+            .modal-btn-row {
+                flex-direction: column;
+            }
+            .database-list {
+                grid-template-columns: 1fr;
+            }
+            .admin-entry,
+            .settings-btn {
+                top: 10px;
+                padding: 6px 12px;
+                font-size: 0.75rem;
+            }
+            .admin-entry {
+                right: 10px;
+            }
+            .settings-btn {
+                left: 10px;
+            }
+        }
+        @media (max-width: 480px) {
+            body {
+                padding: 20px 10px;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .header p {
+                font-size: 0.9rem;
+            }
+            .card {
+                padding: 15px;
+            }
+            .form-group input {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+            .btn {
+                padding: 10px 0;
+                font-size: 0.9rem;
+            }
+            .pet-image {
+                width: 50px;
+                height: 50px;
+            }
+            .pet-name {
+                font-size: 1rem;
+            }
+            .pet-stat {
+                font-size: 0.8rem;
+                padding: 4px 10px;
+            }
+            .modal-box {
+                padding: 15px;
+            }
+            .modal-title {
+                font-size: 1.1rem;
+            }
         }
         .header {
             text-align: center;
